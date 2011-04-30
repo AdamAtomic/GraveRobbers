@@ -16,6 +16,8 @@ package
 		public var trapDoors:FlxGroup;
 		public var floodTraps:FlxGroup;
 		
+		public var robbers:FlxGroup;
+		
 		override public function create():void
 		{
 			//Processing the map data to get trap locations before making a simple collision/pathfinding hull		
@@ -37,6 +39,15 @@ package
 			//map.active = map.visible = false;
 			add(map);
 			
+			Robber.goal = new FlxPoint(16*32,17*32);
+			Robber.changeToggle = false;
+			robbers = new FlxGroup();
+			add(robbers);
+			
+			//debug
+			add(new FlxSprite(Robber.goal.x-8,Robber.goal.y-8));
+			
+			Trap.changed = false;
 			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"]);
 			//flameTraps = makeTraps(FlameTrap,flameLocations);
 			//arrowTraps = makeTraps(ArrowTrap,arrowLocations);
@@ -44,6 +55,7 @@ package
 			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"]);
 			
 			FlxG.visualDebug = true;
+			FlxG.camera.focusOn(new FlxPoint(FlxG.width/2,FlxG.height/2-50));
 		}
 		
 		override public function destroy():void
@@ -60,7 +72,25 @@ package
 			trapDoors = null;
 			floodTraps.destroy();
 			floodTraps = null;
+			robbers.destroy();
+			robbers = null;
 			super.destroy();
+		}
+		
+		override public function update():void
+		{
+			if(FlxG.keys.justPressed("SPACE"))
+				robbers.add(new Robber());
+			
+			Trap.changed = false;
+			super.update();
+			if(Trap.changed)
+			{
+				Trap.changed = false;
+				Robber.changeToggle = !Robber.changeToggle;
+			}
+			
+			FlxG.collide(robbers,map);
 		}
 		
 		public function makeTraps(TrapType:Class,TrapLocations:Array,TrapKeys:Array):FlxGroup

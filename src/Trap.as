@@ -4,6 +4,8 @@ package
 	
 	public class Trap extends FlxSprite
 	{
+		static public var changed:Boolean;
+		
 		public var key:String;
 		public var activeTime:Number;
 		public var reloadTime:Number;

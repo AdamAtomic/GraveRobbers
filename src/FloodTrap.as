@@ -68,6 +68,7 @@ package
 					_map.setTile(_tile.x,_tile.y+2,0);
 					_map.setTile(_tile.x+4,_tile.y+1,0);
 					_map.setTile(_tile.x+4,_tile.y+2,0);
+					Trap.changed = true;
 				}
 			}
 			
@@ -98,15 +99,9 @@ package
 			_map.setTile(_tile.x,_tile.y+2,1);
 			_map.setTile(_tile.x+4,_tile.y+1,1);
 			_map.setTile(_tile.x+4,_tile.y+2,1);
+			Trap.changed = true;
 			filling = true;
 			super.activate();
-		}
-		
-		override public function reload(Timer:FlxTimer=null):void
-		{
-			//lower water and eventually lower doors
-			//followPath(path,16,PATH_BACKWARD);
-			super.reload();
 		}
 	}
 }

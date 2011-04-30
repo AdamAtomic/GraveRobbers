@@ -41,6 +41,7 @@ package
 			{
 				_map.setTile(_tile.x,_tile.y+1,0);
 				_map.setTile(_tile.x,_tile.y+2,0);
+				Trap.changed = true;
 				open = true;
 			}
 		}
@@ -50,6 +51,7 @@ package
 			followPath(path,320,PATH_FORWARD);
 			_map.setTile(_tile.x,_tile.y+1,1);
 			_map.setTile(_tile.x,_tile.y+2,1);
+			Trap.changed = true;
 			falling = true;
 			open = false;
 			super.activate();
