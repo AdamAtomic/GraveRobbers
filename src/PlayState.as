@@ -10,6 +10,7 @@ package
 		[Embed(source="data/temp_tiles.png")] protected var ImgTempTiles:Class;
 		
 		public var map:FlxTilemap;
+		public var crushers:FlxGroup;
 		
 		override public function create():void
 		{
@@ -31,16 +32,12 @@ package
 			var floodLocations:Array = mapSprite.replaceColor(floodColor,solidColor,true);
 			map = new FlxTilemap().loadMap(FlxTilemap.bitmapToCSV(mapSprite.pixels,true),ImgTempTiles,0,0,FlxTilemap.OFF,0,0,1);
 			add(map);
-			
-			//debug
-			mapSprite.setOriginToCorner();
-			mapSprite.scale.x = mapSprite.scale.y = 4;
-			add(mapSprite);
-			
-			//testing positioning of sprites based on pixel locations
+
+			crushers = new FlxGroup;
 			l = crusherLocations.length;
 			while(l--)
-				add(new FlxSprite(crusherLocations[l].x*32,crusherLocations[l].y*32));
+				crushers.add(new Crusher(crusherLocations[l].x,crusherLocations[l].y));
+			add(crushers);
 
 			//TODO: add actual traps with letter assignments and basic behavior?
 			
