@@ -12,7 +12,7 @@ package
 		public function Crusher(X:Number,Y:Number,Key:String)
 		{
 			super(X, Y, Key);
-			makeGraphic(32,64,0xffff0000); //DEBUG
+			makeGraphic(32,64,0xffb05f29); //DEBUG
 			width = 28;
 			height = 32;
 			offset.x = 2;

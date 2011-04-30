@@ -19,7 +19,7 @@ package
 			_map = (FlxG.state as PlayState).map;
 			_localToggle = !changeToggle;
 			_lastY = y;
-			_speed = 100;
+			_speed = 80;
 			
 			acceleration.y = 800;
 		}
@@ -33,11 +33,11 @@ package
 		override public function update():void
 		{
 			//kill the robber if he falls too far
-			if(justTouched(FLOOR) && (y - _lastY > 32*7) && alive)
-			{
+			if(justTouched(FLOOR) && (y - _lastY > 32*7.5) && alive)
 				kill();
+			if(!alive)
 				return;
-			}
+			
 			if(isTouching(FLOOR))
 				_lastY = y;
 			
@@ -47,7 +47,7 @@ package
 				var realPathAngle:Number = FlxU.getAngle(getMidpoint(_point),node);
 				
 				//toggle back and forth between free-follow and walk-style follow
-				if(isTouching(FLOOR) && (node.y < y) && (FlxU.getDistance(_point,node) > 64))
+				if(isTouching(FLOOR) && (y - node.y > 32))
 				{
 					_pathMode = PATH_FORWARD;
 					pathSpeed = _speed*0.5;
@@ -71,7 +71,7 @@ package
 			}
 			
 			//decide if we need to find a new path
-			if(((y > 0) && (_localToggle != changeToggle)) || justTouched(FLOOR))
+			if(((y > 0) && isTouching(FLOOR) && (_localToggle != changeToggle)) || justTouched(FLOOR))
 			{
 				_localToggle = changeToggle;
 				findPath();

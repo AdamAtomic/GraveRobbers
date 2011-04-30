@@ -7,7 +7,7 @@ package
 		public function TrapDoor(X:Number, Y:Number, Key:String)
 		{
 			super(X, Y, Key);
-			makeGraphic(32,16,0xff00ff00);
+			makeGraphic(32,16,0xffb05f29);
 			activeTime = 1;
 			reloadTime = 1;
 		}
@@ -20,7 +20,7 @@ package
 		override public function activate():void
 		{
 			solid = false;
-			alpha = 0.5;
+			alpha = 0;
 			_map.setTile(_tile.x,_tile.y,0);
 			//Trap.changed = true;
 

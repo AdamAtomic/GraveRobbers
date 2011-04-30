@@ -5,21 +5,25 @@ package
 	public class PlayState extends FlxState
 	{
 		[Embed(source="data/map.png")] protected var ImgMap:Class;
-		
-		//just temporary, will paint or hand-draw actual level once its finalized i think?
-		[Embed(source="data/temp_tiles.png")] protected var ImgTempTiles:Class;
+		[Embed(source="data/temp_tiles.png")] protected var ImgTempTiles:Class; //not actually displayed
+		[Embed(source="data/bg.png")] protected var ImgBG:Class;
+		[Embed(source="data/fg.png")] protected var ImgFG:Class;
 		
 		public var map:FlxTilemap;
+		
 		public var crushers:FlxGroup;
 		public var flameTraps:FlxGroup;
 		public var arrowTraps:FlxGroup;
 		public var trapDoors:FlxGroup;
 		public var floodTraps:FlxGroup;
+		public var hazards:FlxGroup;
 		
 		public var robbers:FlxGroup;
 		
 		override public function create():void
 		{
+			add(new FlxSprite(0,0,ImgBG));
+			
 			//Processing the map data to get trap locations before making a simple collision/pathfinding hull		
 			var solidColor:uint = 0xffffffff;
 			//var openColor:uint = 0xff000000;
@@ -36,24 +40,24 @@ package
 			var floodLocations:Array = mapSprite.replaceColor(floodColor,solidColor,true);
 			map = new FlxTilemap().loadMap(FlxTilemap.bitmapToCSV(mapSprite.pixels,true),ImgTempTiles,0,0,FlxTilemap.OFF,0,0,1);
 			map.ignoreDrawDebug = true;
-			//map.active = map.visible = false;
+			map.active = map.visible = false;
 			add(map);
 			
-			Robber.goal = new FlxPoint(16*32,17*32+16);
+			Robber.goal = new FlxPoint(16*32,18*32+16);
 			Robber.changeToggle = false;
 			robbers = new FlxGroup();
 			add(robbers);
 			
-			//debug
-			add(new FlxSprite(Robber.goal.x-8,Robber.goal.y-8));
-			
 			Trap.changed = false;
-			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"]);
-			//flameTraps = makeTraps(FlameTrap,flameLocations);
-			//arrowTraps = makeTraps(ArrowTrap,arrowLocations);
-			trapDoors = makeTraps(TrapDoor,trapLocations,["W","O","L","C","COMMA","Z"]);
-			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"]);
+			hazards = new FlxGroup();
+			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"],true);
+			//flameTraps = makeTraps(FlameTrap,flameLocations,[]);
+			//arrowTraps = makeTraps(ArrowTrap,arrowLocations,[]);
+			trapDoors = makeTraps(TrapDoor,trapLocations,["J","L","C","COMMA","Z"]);
+			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"],true);
 			
+			add(new FlxSprite(0,0,ImgFG));
+
 			FlxG.visualDebug = true;
 		}
 		
@@ -90,14 +94,31 @@ package
 			}
 			
 			FlxG.collide(robbers,map);
+			FlxG.overlap(robbers,hazards,onTrap);
 		}
 		
-		public function makeTraps(TrapType:Class,TrapLocations:Array,TrapKeys:Array):FlxGroup
+		public function onTrap(Victim:Robber,Hazard:Trap):void
+		{
+			if(Hazard is FloodTrap)
+			{
+				if(!(Hazard as FloodTrap).filling)
+					return;
+				Victim.acceleration.y = 0;
+				Victim.velocity.y = -10;
+				Victim.angularVelocity = FlxG.random()*60-30;
+			}
+			if(Victim.alive)
+				Victim.kill();
+		}
+		
+		public function makeTraps(TrapType:Class,TrapLocations:Array,TrapKeys:Array,AddToHazards:Boolean=false):FlxGroup
 		{
 			var traps:FlxGroup = new FlxGroup();
 			var l:int = TrapLocations.length;
 			while(l--)
 				traps.add(new TrapType(TrapLocations[l].x,TrapLocations[l].y,TrapKeys[l]));
+			if(AddToHazards)
+				hazards.add(traps);
 			add(traps);
 			return traps;
 		}

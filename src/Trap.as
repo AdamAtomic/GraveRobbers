@@ -15,8 +15,6 @@ package
 		protected var _activeTimer:FlxTimer;
 		protected var _reloadTimer:FlxTimer;
 		
-		protected var _debugText:FlxText;
-		
 		public function Trap(X:Number,Y:Number,Key:String)
 		{
 			super(X*32, Y*32);
@@ -47,21 +45,6 @@ package
 		{
 			if(FlxG.keys.justPressed(key) && _activeTimer.finished && _reloadTimer.finished)
 				activate();
-		}
-		
-		override public function drawDebug(Camera:FlxCamera=null):void
-		{
-			super.drawDebug(Camera);
-			
-			if(Camera == null)
-				Camera = FlxG.camera;
-			if(_debugText == null)
-			{
-				_debugText = new FlxText(x+2,y+2,40,key);
-				_debugText.color = 0xff000000;
-				_debugText.ignoreDrawDebug = true;
-			}
-			_debugText.draw();
 		}
 		
 		public function activate():void
