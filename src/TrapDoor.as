@@ -22,7 +22,7 @@ package
 			solid = false;
 			alpha = 0.5;
 			_map.setTile(_tile.x,_tile.y,0);
-			Trap.changed = true;
+			//Trap.changed = true;
 
 			super.activate();
 		}
@@ -32,7 +32,7 @@ package
 			solid = true;
 			alpha = 1;
 			_map.setTile(_tile.x,_tile.y,1);
-			Trap.changed = true;
+			//Trap.changed = true;
 			
 			super.reload();
 		}

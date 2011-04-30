@@ -39,7 +39,7 @@ package
 			//map.active = map.visible = false;
 			add(map);
 			
-			Robber.goal = new FlxPoint(16*32,17*32);
+			Robber.goal = new FlxPoint(16*32,17*32+16);
 			Robber.changeToggle = false;
 			robbers = new FlxGroup();
 			add(robbers);
@@ -55,7 +55,6 @@ package
 			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"]);
 			
 			FlxG.visualDebug = true;
-			FlxG.camera.focusOn(new FlxPoint(FlxG.width/2,FlxG.height/2-50));
 		}
 		
 		override public function destroy():void
