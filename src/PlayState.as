@@ -18,8 +18,6 @@ package
 		
 		override public function create():void
 		{
-			var l:int;
-			
 			//Processing the map data to get trap locations before making a simple collision/pathfinding hull		
 			var solidColor:uint = 0xffffffff;
 			//var openColor:uint = 0xff000000;
@@ -47,9 +45,11 @@ package
 			trapDoors.members[1].key = "W";
 			trapDoors.members[2].key = "C";
 			trapDoors.members[3].key = "O";
-			trapDoors.members[4].key = "L";
-			trapDoors.members[5].key = "COMMA";
+			trapDoors.members[4].key = "COMMA";
+			trapDoors.members[5].key = "L";
 			floodTraps = makeTraps(FloodTrap,floodLocations);
+			
+			FlxG.visualDebug = true;
 		}
 		
 		override public function destroy():void
