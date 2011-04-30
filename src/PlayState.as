@@ -22,7 +22,7 @@ package
 			
 			//Processing the map data to get trap locations before making a simple collision/pathfinding hull		
 			var solidColor:uint = 0xffffffff;
-			var openColor:uint = 0xff000000;
+			//var openColor:uint = 0xff000000;
 			var crusherColor:uint = 0xffff0000;
 			var flameColor:uint = 0xffffd400;
 			var arrowColor:uint = 0xffff00f2;
@@ -32,7 +32,7 @@ package
 			var crusherLocations:Array = mapSprite.replaceColor(crusherColor,solidColor,true);
 			var flameLocations:Array = mapSprite.replaceColor(flameColor,solidColor,true);
 			var arrowLocations:Array = mapSprite.replaceColor(arrowColor,solidColor,true);
-			var trapLocations:Array = mapSprite.replaceColor(trapColor,openColor,true);
+			var trapLocations:Array = mapSprite.replaceColor(trapColor,solidColor,true);
 			var floodLocations:Array = mapSprite.replaceColor(floodColor,solidColor,true);
 			map = new FlxTilemap().loadMap(FlxTilemap.bitmapToCSV(mapSprite.pixels,true),ImgTempTiles,0,0,FlxTilemap.OFF,0,0,1);
 			map.ignoreDrawDebug = true;
@@ -43,7 +43,30 @@ package
 			flameTraps = makeTraps(FlameTrap,flameLocations);
 			arrowTraps = makeTraps(ArrowTrap,arrowLocations);
 			trapDoors = makeTraps(TrapDoor,trapLocations);
+			trapDoors.members[0].key = "Z";
+			trapDoors.members[1].key = "W";
+			trapDoors.members[2].key = "C";
+			trapDoors.members[3].key = "O";
+			trapDoors.members[4].key = "L";
+			trapDoors.members[5].key = "COMMA";
 			floodTraps = makeTraps(FloodTrap,floodLocations);
+		}
+		
+		override public function destroy():void
+		{
+			map.destroy();
+			map = null;
+			crushers.destroy();
+			crushers = null;
+			flameTraps.destroy();
+			flameTraps = null;
+			arrowTraps.destroy();
+			arrowTraps = null;
+			trapDoors.destroy();
+			trapDoors = null;
+			floodTraps.destroy();
+			floodTraps = null;
+			super.destroy();
 		}
 		
 		public function makeTraps(TrapType:Class,TrapLocations:Array):FlxGroup
@@ -52,7 +75,7 @@ package
 			var l:int = TrapLocations.length;
 			while(l--)
 				traps.add(new TrapType(TrapLocations[l].x,TrapLocations[l].y));
-			traps.sort();
+			traps.sort("x");
 			add(traps);
 			return traps;
 		}
