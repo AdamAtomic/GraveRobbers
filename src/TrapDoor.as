@@ -8,7 +8,6 @@ package
 		{
 			super(X, Y, Key);
 			makeGraphic(32,16,0xff00ff00);
-			immovable = true;
 			activeTime = 1;
 			reloadTime = 1;
 		}

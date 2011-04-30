@@ -41,7 +41,7 @@ package
 			//flameTraps = makeTraps(FlameTrap,flameLocations);
 			//arrowTraps = makeTraps(ArrowTrap,arrowLocations);
 			trapDoors = makeTraps(TrapDoor,trapLocations,["W","O","L","C","COMMA","Z"]);
-			//floodTraps = makeTraps(FloodTrap,floodLocations);
+			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"]);
 			
 			FlxG.visualDebug = true;
 		}

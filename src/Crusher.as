@@ -21,8 +21,8 @@ package
 			path = new FlxPath([new FlxPoint(x+14,y+16),new FlxPoint(x+14,y+80)]);
 			activeTime = 1;
 			reloadTime = 4;
-			
-			immovable = true; //not sure about this still
+			open = true;
+			falling = false;
 		}
 		
 		override public function update():void
