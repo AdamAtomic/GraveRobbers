@@ -15,12 +15,12 @@ package
 		
 		protected var _debugText:FlxText;
 		
-		public function Trap(X:Number,Y:Number)
+		public function Trap(X:Number,Y:Number,Key:String)
 		{
 			super(X*32, Y*32);
-			key = "SPACE";
-			activeTime = 1;
-			reloadTime = 1;
+			key = Key;
+			activeTime = 2;
+			reloadTime = 2;
 			_tile = new FlxPoint(X,Y);
 			_map = (FlxG.state as PlayState).map;
 			_activeTimer = new FlxTimer();

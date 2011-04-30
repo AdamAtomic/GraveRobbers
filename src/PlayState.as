@@ -37,17 +37,11 @@ package
 			//map.active = map.visible = false;
 			add(map);
 			
-			crushers = makeTraps(Crusher,crusherLocations);
-			flameTraps = makeTraps(FlameTrap,flameLocations);
-			arrowTraps = makeTraps(ArrowTrap,arrowLocations);
-			trapDoors = makeTraps(TrapDoor,trapLocations);
-			trapDoors.members[0].key = "Z";
-			trapDoors.members[1].key = "W";
-			trapDoors.members[2].key = "C";
-			trapDoors.members[3].key = "O";
-			trapDoors.members[4].key = "COMMA";
-			trapDoors.members[5].key = "L";
-			floodTraps = makeTraps(FloodTrap,floodLocations);
+			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"]);
+			//flameTraps = makeTraps(FlameTrap,flameLocations);
+			//arrowTraps = makeTraps(ArrowTrap,arrowLocations);
+			trapDoors = makeTraps(TrapDoor,trapLocations,["W","O","L","C","COMMA","Z"]);
+			//floodTraps = makeTraps(FloodTrap,floodLocations);
 			
 			FlxG.visualDebug = true;
 		}
@@ -69,13 +63,12 @@ package
 			super.destroy();
 		}
 		
-		public function makeTraps(TrapType:Class,TrapLocations:Array):FlxGroup
+		public function makeTraps(TrapType:Class,TrapLocations:Array,TrapKeys:Array):FlxGroup
 		{
 			var traps:FlxGroup = new FlxGroup();
 			var l:int = TrapLocations.length;
 			while(l--)
-				traps.add(new TrapType(TrapLocations[l].x,TrapLocations[l].y));
-			traps.sort("x");
+				traps.add(new TrapType(TrapLocations[l].x,TrapLocations[l].y,TrapKeys[l]));
 			add(traps);
 			return traps;
 		}

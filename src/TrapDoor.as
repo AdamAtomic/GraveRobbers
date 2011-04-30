@@ -4,9 +4,9 @@ package
 
 	public class TrapDoor extends Trap
 	{
-		public function TrapDoor(X:Number, Y:Number)
+		public function TrapDoor(X:Number, Y:Number, Key:String)
 		{
-			super(X, Y);
+			super(X, Y, Key);
 			makeGraphic(32,16,0xff00ff00);
 			immovable = true;
 			activeTime = 1;

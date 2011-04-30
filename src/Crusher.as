@@ -6,13 +6,59 @@ package
 	{
 		//[Embed(source="data/temp_tiles.png")] protected var ImgTempTiles:Class;
 		
-		public function Crusher(X:Number,Y:Number)
+		public var falling:Boolean;
+		public var open:Boolean;
+		
+		public function Crusher(X:Number,Y:Number,Key:String)
 		{
-			super(X, Y-1);
+			super(X, Y, Key);
 			makeGraphic(32,64,0xffff0000); //DEBUG
-			immovable = true;
-			path = new FlxPath([new FlxPoint(x+16,y+32),new FlxPoint(x+16,y+96)]);
-			followPath(path,50,PATH_YOYO); //DEBUG
+			width = 28;
+			height = 32;
+			offset.x = 2;
+			offset.y = 32;
+			x += 2;
+			path = new FlxPath([new FlxPoint(x+14,y+16),new FlxPoint(x+14,y+80)]);
+			activeTime = 1;
+			reloadTime = 4;
+			
+			immovable = true; //not sure about this still
+		}
+		
+		override public function update():void
+		{
+			if(pathSpeed == 0)
+				velocity.x = velocity.y = 0;
+
+			super.update();
+			
+			if(falling && (pathSpeed == 0))
+			{
+				falling = false;
+				FlxG.camera.shake(0.02,0.065);
+			}
+			if(!falling && !open && (y < (_tile.y+1.5)*32))
+			{
+				_map.setTile(_tile.x,_tile.y+1,0);
+				_map.setTile(_tile.x,_tile.y+2,0);
+				open = true;
+			}
+		}
+		
+		override public function activate():void
+		{
+			followPath(path,320,PATH_FORWARD);
+			_map.setTile(_tile.x,_tile.y+1,1);
+			_map.setTile(_tile.x,_tile.y+2,1);
+			falling = true;
+			open = false;
+			super.activate();
+		}
+		
+		override public function reload(Timer:FlxTimer=null):void
+		{
+			followPath(path,16,PATH_BACKWARD);
+			super.reload();
 		}
 	}
 }
