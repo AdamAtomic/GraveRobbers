@@ -18,6 +18,7 @@ package
 		public var floodTraps:FlxGroup;
 		
 		public var arrows:FlxGroup;
+		public var flames:FlxGroup;
 		
 		public var hazards:FlxGroup;
 		public var againstMap:FlxGroup;
@@ -54,7 +55,8 @@ package
 			
 			Trap.changed = false;
 			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"]);
-			//flameTraps = makeTraps(FlameTrap,flameLocations,[]);
+			flames = add(new FlxGroup()) as FlxGroup;
+			flameTraps = makeTraps(FlameTrap,flameLocations,["U","D"]);
 			arrows = add(new FlxGroup()) as FlxGroup;
 			arrowTraps = makeTraps(ArrowTrap,arrowLocations,["R","I","V","N","PERIOD"]);
 			trapDoors = makeTraps(TrapDoor,trapLocations,["J","L","C","COMMA","Z"]);
@@ -62,6 +64,7 @@ package
 			
 			//these are objects that can kill robbers
 			hazards = new FlxGroup();
+			hazards.add(flames);
 			hazards.add(arrows);
 			hazards.add(crushers);
 			hazards.add(floodTraps);

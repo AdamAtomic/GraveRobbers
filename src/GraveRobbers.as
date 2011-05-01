@@ -8,7 +8,7 @@ package
 	{
 		public function GraveRobbers()
 		{
-			super(1024,768,PlayState,1,50,50);
+			super(1024,768,PlayState,1,60,30);
 			forceDebugger = true;
 		}
 	}
