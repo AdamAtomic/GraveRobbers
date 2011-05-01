@@ -32,6 +32,10 @@ package
 		public var soulDisplay:FlxText;
 		public var gameOverDisplay:FlxText;
 		
+		public var sequence:uint;
+		public var delay:FlxTimer;
+		public var delay2:FlxTimer;
+		
 		override public function create():void
 		{
 			FlxG.camera.flash(0xff000000);
@@ -98,6 +102,13 @@ package
 			gameOverDisplay.setFormat(null,120,0xc1b6b6,"center");
 			gameOverDisplay.visible = false;
 			add(gameOverDisplay);
+			
+			sequence = 0;
+			delay = new FlxTimer();
+			delay.time = 1.5;
+			delay2 = new FlxTimer();
+			delay2.time = 5;
+			onDelay2();
 
 			//FlxG.visualDebug = true;
 		}
@@ -130,9 +141,6 @@ package
 				}
 			}
 			
-			if(FlxG.keys.justPressed("SPACE"))
-				(robbers.recycle(Robber) as Robber).reset(0,0);
-
 			super.update();
 			if(Trap.changed)
 			{
@@ -211,12 +219,51 @@ package
 		
 		public function gameOver():void
 		{
+			gameOverDisplay.alpha = 0;
 			gameOverDisplay.visible = true;
+			delay.stop();
+			delay2.stop();
 		}
 		
 		public function onFade():void
 		{
 			FlxG.resetState();
+		}
+		
+		public function onDelay(Timer:FlxTimer=null):void
+		{
+			(robbers.recycle(Robber) as Robber).reset(0,0);
+			if(delay.loopsLeft == 0)
+			{
+				delay2.time -= 0.2;
+				if(delay2.time < 2)
+					delay2.time;
+				delay2.start(delay2.time,1,onDelay2);
+			}
+		}
+		
+		public function onDelay2(Timer:FlxTimer=null):void
+		{
+			sequence++;
+			delay.time -= 0.05;
+			if(delay.time < 0.5)
+				delay.time = 0.5;
+			var metaWaveLength:uint = 10;
+			var numRobbers:uint = sequence;
+			if(numRobbers > (metaWaveLength-1))
+			{
+				if(numRobbers%metaWaveLength == 0)
+				{
+					delay2.time += 1.5;
+					numRobbers *= 0.25;
+				}
+				else if(numRobbers%metaWaveLength == 1)
+					numRobbers *= 0.5;
+				else if(numRobbers%metaWaveLength == 2)
+					numRobbers *= 0.75;
+			}
+			delay.start(delay.time,numRobbers,onDelay);
+			FlxG.log(numRobbers);
 		}
 	}
 }
