@@ -256,19 +256,12 @@ package
 			delay.time -= 0.05;
 			if(delay.time < 0.5)
 				delay.time = 0.5;
-			var metaWaveLength:uint = 10;
 			var numRobbers:uint = sequence;
-			if(numRobbers > (metaWaveLength-1))
+			if((numRobbers > 9) && (numRobbers%10 == 0))
 			{
-				if(numRobbers%metaWaveLength == 0)
-				{
-					delay2.time += 1.5;
-					numRobbers *= 0.25;
-				}
-				else if(numRobbers%metaWaveLength == 1)
-					numRobbers *= 0.5;
-				else if(numRobbers%metaWaveLength == 2)
-					numRobbers *= 0.75;
+				//every 10 waves, partially reset the delay and sequence count
+				delay2.time += 1.5;
+				sequence -= 5;
 			}
 			delay.start(delay.time,numRobbers,onDelay);
 			FlxG.log(numRobbers);
