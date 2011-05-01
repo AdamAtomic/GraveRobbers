@@ -8,8 +8,8 @@ package
 		{
 			super(X, Y, Key);
 			makeGraphic(32,16,0xffb05f29);
-			activeTime = 2;
-			reloadTime = 0.5;
+			activeTime = 1;
+			reloadTime = 1;
 		}
 		
 		override public function update():void

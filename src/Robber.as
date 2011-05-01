@@ -135,13 +135,13 @@ package
 			//decide if we need to find a new path
 			if(angularVelocity == 0)
 			{
-				if((_jumpCount > 2) && isTouching(FLOOR) && (_localTracker != changeTracker))
+				if( ((_jumpCount > 2) && isTouching(FLOOR) && (_localTracker != changeTracker)) ||
+					(justTouched(FLOOR) && (y - _lastY > 16)) ||
+					(isTouching(FLOOR) && isTouching(WALL)) )
 				{
 					_localTracker = changeTracker;
 					findPath();
 				}
-				else if(justTouched(FLOOR) && (y - _lastY > 32))
-					findPath();
 			}
 			
 			//point the right way

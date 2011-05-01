@@ -195,12 +195,20 @@ package
 				return;
 			}
 			
+			if(Hazard is Crusher)
+			{
+				if(!(Hazard as Crusher).falling)
+					return;
+			}
+			
 			if(Victim.alive)
 				Victim.kill();
 		}
 		
 		public function onTreasure(Victor:Robber,Bling:Treasure):void
 		{
+			if(Victor.pathSpeed == 0)
+				return;
 			Victor.exists = false;
 			Bling.hurt(1);
 		}

@@ -37,7 +37,7 @@ package
 				falling = false;
 				FlxG.camera.shake(0.02,0.065);
 			}
-			if(!falling && !open && (y < (_tile.y+1)*32))
+			if(!falling && !open && (y < (_tile.y+1.5)*32))
 			{
 				_map.setTile(_tile.x,_tile.y+1,0);
 				_map.setTile(_tile.x,_tile.y+2,0);
