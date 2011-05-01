@@ -119,7 +119,7 @@ package
 					_point.y += 24;
 					_jumpHelp2.y += 24;
 					_jumpCount += FlxG.elapsed;
-					if((_jumpCount > 0.35) && !_map.overlapsPoint(_point) && !_map.overlapsPoint(_jumpHelp1) && _map.overlapsPoint(_jumpHelp2))
+					if((_jumpCount > 0.4) && !_map.overlapsPoint(_point) && !_map.overlapsPoint(_jumpHelp1) && _map.overlapsPoint(_jumpHelp2))
 					{
 						velocity.y = -200;
 						pathSpeed = _speed*2.2;
@@ -174,6 +174,7 @@ package
 			angle = 0;
 			angularVelocity = 0;
 			drag.x = 200;
+			(FlxG.state as PlayState).souls++;
 		}
 		
 		override public function reset(X:Number,Y:Number):void

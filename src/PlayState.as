@@ -8,6 +8,7 @@ package
 		[Embed(source="data/temp_tiles.png")] protected var ImgTempTiles:Class; //not actually displayed
 		[Embed(source="data/bg.png")] protected var ImgBG:Class;
 		[Embed(source="data/fg.png")] protected var ImgFG:Class;
+		[Embed(source="data/skull.png")] protected var ImgSkull:Class;
 		
 		public var map:FlxTilemap;
 		
@@ -23,10 +24,18 @@ package
 		public var hazards:FlxGroup;
 		public var againstMap:FlxGroup;
 		
+		public var treasure:Treasure;
+		
 		public var robbers:FlxGroup;
+		
+		public var souls:Number;
+		public var soulDisplay:FlxText;
+		public var gameOverDisplay:FlxText;
 		
 		override public function create():void
 		{
+			FlxG.camera.flash(0xff000000);
+			
 			add(new FlxSprite(0,0,ImgBG));
 			
 			//Processing the map data to get trap locations before making a simple collision/pathfinding hull		
@@ -48,7 +57,11 @@ package
 			map.active = map.visible = false;
 			add(map);
 			
-			Robber.goal = new FlxPoint(16*32,18*32+16);
+			Robber.goal = new FlxPoint(16*32,18*32+16); //used by treasure
+			
+			treasure = new Treasure();
+			add(treasure);
+
 			Robber.changeTracker = 1;
 			robbers = new FlxGroup();
 			add(robbers);
@@ -75,31 +88,48 @@ package
 			againstMap.add(arrows);
 			
 			add(new FlxSprite(0,0,ImgFG));
+			add(new FlxSprite(FlxG.width-70-20,20,ImgSkull));
+			souls = 0;
+			soulDisplay = new FlxText(FlxG.width-70-20-20,100,110);
+			soulDisplay.setFormat(null,40,0xc1b6b6,"center");
+			add(soulDisplay);
+			
+			gameOverDisplay = new FlxText(0,FlxG.height/2-70,FlxG.width,"GAME OVER");
+			gameOverDisplay.setFormat(null,120,0xc1b6b6,"center");
+			gameOverDisplay.visible = false;
+			add(gameOverDisplay);
 
 			//FlxG.visualDebug = true;
 		}
 		
 		override public function destroy():void
 		{
-			map.destroy();
 			map = null;
-			crushers.destroy();
 			crushers = null;
-			flameTraps.destroy();
 			flameTraps = null;
-			arrowTraps.destroy();
 			arrowTraps = null;
-			trapDoors.destroy();
 			trapDoors = null;
-			floodTraps.destroy();
 			floodTraps = null;
-			robbers.destroy();
 			robbers = null;
+			hazards = null;
+			againstMap = null;
+			treasure = null;
 			super.destroy();
 		}
 		
 		override public function update():void
 		{
+			if(gameOverDisplay.visible)
+			{
+				gameOverDisplay.alpha += FlxG.elapsed*0.25;
+				if(gameOverDisplay.alpha >= 1)
+				{
+					gameOverDisplay.alpha = 1;
+					if(FlxG.keys.any())
+						FlxG.camera.fade(0xff000000,1,onFade);
+				}
+			}
+			
 			if(FlxG.keys.justPressed("SPACE"))
 				(robbers.recycle(Robber) as Robber).reset(0,0);
 
@@ -112,6 +142,9 @@ package
 			
 			FlxG.collide(map,againstMap);
 			FlxG.overlap(robbers,hazards,onTrap);
+			FlxG.overlap(robbers,treasure,onTreasure);
+			
+			soulDisplay.text = souls.toString();
 		}
 		
 		public function onTrap(Victim:Robber,Hazard:FlxSprite):void
@@ -130,7 +163,7 @@ package
 			
 			if(Hazard is Arrow)
 			{
-				if(Victim.angularVelocity != 0)
+				if((Victim.angularVelocity != 0) || !Victim.alive)
 					return;
 				var arrow:Arrow = Hazard as Arrow;
 				arrow.exists = false;
@@ -142,8 +175,26 @@ package
 				return;
 			}
 			
+			if(Hazard is Flame)
+			{
+				if(!Victim.alive)
+					return;
+				Victim.kill();
+				Victim.active = true;
+				Victim.moves = true;
+				Victim.elasticity = 0.5;
+				Victim.acceleration.y = 200 + FlxG.random()*100;
+				return;
+			}
+			
 			if(Victim.alive)
 				Victim.kill();
+		}
+		
+		public function onTreasure(Victor:Robber,Bling:Treasure):void
+		{
+			Victor.exists = false;
+			Bling.hurt(1);
 		}
 		
 		public function makeTraps(TrapType:Class,TrapLocations:Array,TrapKeys:Array,AddToHazards:Boolean=false):FlxGroup
@@ -156,6 +207,16 @@ package
 				hazards.add(traps);
 			add(traps);
 			return traps;
+		}
+		
+		public function gameOver():void
+		{
+			gameOverDisplay.visible = true;
+		}
+		
+		public function onFade():void
+		{
+			FlxG.resetState();
 		}
 	}
 }
