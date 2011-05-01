@@ -19,8 +19,8 @@ package
 		{
 			super(X*32, Y*32);
 			key = Key;
-			activeTime = 2;
-			reloadTime = 2;
+			activeTime = 1;
+			reloadTime = 1;
 			_tile = new FlxPoint(X,Y);
 			_map = (FlxG.state as PlayState).map;
 			_activeTimer = new FlxTimer();

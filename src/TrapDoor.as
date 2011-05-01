@@ -8,8 +8,8 @@ package
 		{
 			super(X, Y, Key);
 			makeGraphic(32,16,0xffb05f29);
-			activeTime = 1;
-			reloadTime = 1;
+			activeTime = 2;
+			reloadTime = 0.5;
 		}
 		
 		override public function update():void
@@ -32,7 +32,7 @@ package
 			solid = true;
 			alpha = 1;
 			_map.setTile(_tile.x,_tile.y,1);
-			//Trap.changed = true;
+			Trap.changed = true;
 			
 			super.reload();
 		}

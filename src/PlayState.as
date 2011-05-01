@@ -16,7 +16,11 @@ package
 		public var arrowTraps:FlxGroup;
 		public var trapDoors:FlxGroup;
 		public var floodTraps:FlxGroup;
+		
+		public var arrows:FlxGroup;
+		
 		public var hazards:FlxGroup;
+		public var againstMap:FlxGroup;
 		
 		public var robbers:FlxGroup;
 		
@@ -44,21 +48,32 @@ package
 			add(map);
 			
 			Robber.goal = new FlxPoint(16*32,18*32+16);
-			Robber.changeToggle = false;
+			Robber.changeTracker = 1;
 			robbers = new FlxGroup();
 			add(robbers);
 			
 			Trap.changed = false;
-			hazards = new FlxGroup();
-			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"],true);
+			crushers = makeTraps(Crusher,crusherLocations,["E","F","K","X"]);
 			//flameTraps = makeTraps(FlameTrap,flameLocations,[]);
-			//arrowTraps = makeTraps(ArrowTrap,arrowLocations,[]);
+			arrows = add(new FlxGroup()) as FlxGroup;
+			arrowTraps = makeTraps(ArrowTrap,arrowLocations,["R","I","V","N","PERIOD"]);
 			trapDoors = makeTraps(TrapDoor,trapLocations,["J","L","C","COMMA","Z"]);
-			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"],true);
+			floodTraps = makeTraps(FloodTrap,floodLocations,["S","M"]);
+			
+			//these are objects that can kill robbers
+			hazards = new FlxGroup();
+			hazards.add(arrows);
+			hazards.add(crushers);
+			hazards.add(floodTraps);
+			
+			//these are things that hit the map
+			againstMap = new FlxGroup();
+			againstMap.add(robbers);
+			againstMap.add(arrows);
 			
 			add(new FlxSprite(0,0,ImgFG));
 
-			FlxG.visualDebug = true;
+			//FlxG.visualDebug = true;
 		}
 		
 		override public function destroy():void
@@ -83,30 +98,47 @@ package
 		override public function update():void
 		{
 			if(FlxG.keys.justPressed("SPACE"))
-				robbers.add(new Robber());
-			
-			Trap.changed = false;
+				(robbers.recycle(Robber) as Robber).reset(0,0);
+
 			super.update();
 			if(Trap.changed)
 			{
 				Trap.changed = false;
-				Robber.changeToggle = !Robber.changeToggle;
+				Robber.changeTracker++;
 			}
 			
-			FlxG.collide(robbers,map);
+			FlxG.collide(map,againstMap);
 			FlxG.overlap(robbers,hazards,onTrap);
 		}
 		
-		public function onTrap(Victim:Robber,Hazard:Trap):void
+		public function onTrap(Victim:Robber,Hazard:FlxSprite):void
 		{
 			if(Hazard is FloodTrap)
 			{
-				if(!(Hazard as FloodTrap).filling)
+				if(!(Hazard as FloodTrap).filling || (Victim.acceleration.y == 0) || !Victim.alive)
 					return;
 				Victim.acceleration.y = 0;
-				Victim.velocity.y = -10;
+				Victim.velocity.y = -14;
 				Victim.angularVelocity = FlxG.random()*60-30;
+				Victim.velocity.x = FlxG.random()*20-10;
+				Victim.stopFollowingPath(true);
+				return;
 			}
+			
+			if(Hazard is Arrow)
+			{
+				if(Victim.angularVelocity != 0)
+					return;
+				var arrow:Arrow = Hazard as Arrow;
+				arrow.exists = false;
+				Victim.stopFollowingPath(true);
+				Victim.velocity.x = arrow.velocity.x*(0.3 + FlxG.random()*0.4);
+				Victim.velocity.y = -200 - FlxG.random()*100;
+				Victim.elasticity = 0.5;
+				Victim.angularVelocity = FlxG.random()*360 - 180;
+				return;
+			}
+			
 			if(Victim.alive)
 				Victim.kill();
 		}
